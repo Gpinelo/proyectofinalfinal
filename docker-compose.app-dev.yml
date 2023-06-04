@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  elections-api:
+    build: ./api
+    depends_on:
+      - elections-db
+    ports: 
+      - "10016:10016"
+    networks:
+      - web
+      - backend
+  elections-db:
+    image: "mongo:latest"
+    command: mongod --port 10018
+    ports:
+      - "10018:10018"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=pinelo
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=tree_elections_db
+    volumes:
+      - init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongo-data:/data/db
+    networks:
+      - backend
+volumes:
+  mongo-data:
+  init-mongo.js:
+networks:
+  backend:
+  web:
